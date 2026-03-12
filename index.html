@@ -1,83 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <title>LuckyCash NG</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#22c55e">
 
 <style>
-
-body{
-background:#0f172a;
-color:white;
-font-family:Arial;
-text-align:center;
-margin:0;
-}
-
-.card{
-background:#1e293b;
-margin:15px;
-padding:20px;
-border-radius:10px;
-}
-
-input{
-padding:10px;
-margin:5px;
-width:80%;
-border:none;
-border-radius:6px;
-}
-
-button{
-padding:10px 20px;
-background:#22c55e;
-border:none;
-border-radius:6px;
-color:white;
-margin:5px;
-}
-
-table{
-width:100%;
-margin-top:10px;
-}
-
-td,th{
-padding:8px;
-}
-
-#dashboard,#adminPanel{
-display:none;
-}
-
+body{background:#0f172a;color:white;font-family:Arial;text-align:center;margin:0;}
+.card{background:#1e293b;margin:15px;padding:20px;border-radius:10px;}
+input{padding:10px;margin:5px;width:80%;border:none;border-radius:6px;}
+button{padding:10px 20px;background:#22c55e;border:none;border-radius:6px;color:white;margin:5px;cursor:pointer;}
+table{width:100%;margin-top:10px;}
+td,th{padding:8px;}
+#dashboard,#adminPanel{display:none;}
 </style>
 
+<!-- Inline PWA manifest -->
+<link rel="manifest" href="data:application/manifest+json,{&quot;name&quot;:&quot;LuckyCash NG&quot;,&quot;short_name&quot;:&quot;LuckyCash&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#0f172a&quot;,&quot;theme_color&quot;:&quot;#22c55e&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;https://yourdomain.com/icon-192.png&quot;,&quot;sizes&quot;:&quot;192x192&quot;,&quot;type&quot;:&quot;image/png&quot;},{&quot;src&quot;:&quot;https://yourdomain.com/icon-512.png&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/png&quot;}]}">
 </head>
-
 <body>
 
 <h2>LuckyCash NG</h2>
 
 <div id="authBox" class="card">
-
 <input id="nickname" placeholder="Nickname"><br>
 <input id="email" placeholder="Email"><br>
 <input id="password" type="password" placeholder="Password"><br>
-
 <button onclick="registerUser()">Register</button>
 <button onclick="loginUser()">Login</button>
-
 </div>
-
 
 <div id="dashboard">
 
+<!-- Top banner ad -->
 <div class="card">
-Balance: ₦<span id="balance">0</span>
+<h3>Advertisement</h3>
+<script type="text/javascript">adsterra_ad(5661933, 728, 90);</script>
 </div>
+
+<div class="card">Balance: ₦<span id="balance">0</span></div>
 
 <div class="card">
 <h3>Spin</h3>
@@ -86,460 +48,215 @@ Balance: ₦<span id="balance">0</span>
 </div>
 
 <div class="card">
+<!-- Inline ad -->
+<script type="text/javascript">adsterra_ad(5661933, 300, 250);</script>
+</div>
+
+<div class="card">
 <h3>Daily Check-in</h3>
 <button onclick="dailyCheckin()">Claim ₦20</button>
 </div>
 
 <div class="card">
-
 <h3>Referral</h3>
-
 <input id="refLink" readonly>
-
 <button onclick="copyRef()">Copy Link</button>
-
 </div>
 
 <div class="card">
-
 <h3>Withdraw</h3>
-
 <input id="bank" placeholder="Bank Name"><br>
 <input id="accName" placeholder="Account Name"><br>
 <input id="accNum" placeholder="Account Number"><br>
-
 <button onclick="withdraw()">Withdraw</button>
-
 </div>
-
 
 <div class="card">
-
 <h3>Withdrawal History</h3>
-
 <table>
-
-<thead>
-<tr>
-<th>Amount</th>
-<th>Bank</th>
-<th>Account</th>
-</tr>
-</thead>
-
+<thead><tr><th>Amount</th><th>Bank</th><th>Account</th></tr></thead>
 <tbody id="historyTable"></tbody>
-
 </table>
-
 </div>
 
 </div>
-
-
 
 <div id="adminPanel" class="card">
-
 <h2>Admin Dashboard</h2>
-
 <div class="card">
-
 <p>Total Users: <span id="totalUsers">0</span></p>
 <p>Total Withdrawals: ₦<span id="totalWithdraw">0</span></p>
-
 </div>
-
 <table>
-
-<thead>
-
-<tr>
-<th>User</th>
-<th>Amount</th>
-<th>Bank</th>
-<th>Account Name</th>
-<th>Account Number</th>
-<th>Action</th>
-</tr>
-
-</thead>
-
+<thead><tr><th>User</th><th>Amount</th><th>Bank</th><th>Account Name</th><th>Account Number</th><th>Action</th></tr></thead>
 <tbody id="withdrawTable"></tbody>
-
 </table>
-
 </div>
 
+<!-- Footer banner ad -->
+<footer>
+<p>© 2026 LuckyCash NG</p>
+<div class="card">
+<script type="text/javascript">adsterra_ad(5661933, 728, 90);</script>
+</div>
+</footer>
 
+<!-- Popunder ad: automatic & on user actions -->
+<script type="text/javascript">
+function triggerPopunder(){ adsterra_pop(28803341); }
+triggerPopunder(); // automatic on page load
+</script>
 
 <script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"
-
-import {
-getAuth,
-createUserWithEmailAndPassword,
-signInWithEmailAndPassword,
-onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js"
-
-import {
-getFirestore,
-doc,
-setDoc,
-getDoc,
-updateDoc,
-addDoc,
-collection,
-getDocs,
-deleteDoc
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js"
-
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, addDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-
 apiKey:"AIzaSyCaXJBwb6DxHnEmOfZRy_AcwP6oxgilD8U",
 authDomain:"earn-e6c43.firebaseapp.com",
 projectId:"earn-e6c43",
 storageBucket:"earn-e6c43.appspot.com",
 messagingSenderId:"991155185446",
 appId:"1:991155185446:web:45f37f167af7a8184e83e7"
-
 }
 
+const ADMIN="adefemioke558@gmail.com";
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
 
-
-const ADMIN="adefemioke558@gmail.com"
-
-
-
-const app=initializeApp(firebaseConfig)
-const auth=getAuth(app)
-const db=getFirestore(app)
-
-
-
-function today(){
-return new Date().toISOString().split("T")[0]
-}
-
-
+function today(){ return new Date().toISOString().split("T")[0]; }
 
 window.registerUser = async()=>{
-
-const nickname=document.getElementById("nickname").value
-const email=document.getElementById("email").value
-const password=document.getElementById("password").value
-
-const cred=await createUserWithEmailAndPassword(auth,email,password)
-
-await setDoc(doc(db,"users",cred.user.uid),{
-
-nickname:nickname,
-balance:0,
-lastSpin:"",
-lastCheck:""
-
-})
-
-alert("Registered successfully")
-
+const nickname=document.getElementById("nickname").value;
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+const cred=await createUserWithEmailAndPassword(auth,email,password);
+await setDoc(doc(db,"users",cred.user.uid),{nickname:nickname,balance:0,lastSpin:"",lastCheck:""});
+alert("Registered successfully");
 }
-
-
 
 window.loginUser = async()=>{
-
-const email=document.getElementById("email").value
-const password=document.getElementById("password").value
-
-await signInWithEmailAndPassword(auth,email,password)
-
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
+await signInWithEmailAndPassword(auth,email,password);
 }
-
-
 
 onAuthStateChanged(auth,async(user)=>{
-
 if(user){
-
-document.getElementById("authBox").style.display="none"
-document.getElementById("dashboard").style.display="block"
-
-const ref=doc(db,"users",user.uid)
-const snap=await getDoc(ref)
-
-let balance=Number(snap.data().balance || 0)
-
-document.getElementById("balance").innerText=balance
-
-generateRefLink(user)
-
-loadHistory()
-
+document.getElementById("authBox").style.display="none";
+document.getElementById("dashboard").style.display="block";
+const ref=doc(db,"users",user.uid);
+const snap=await getDoc(ref);
+let balance=Number(snap.data().balance || 0);
+document.getElementById("balance").innerText=balance;
+generateRefLink(user);
+loadHistory();
 if(user.email===ADMIN){
-
-document.getElementById("adminPanel").style.display="block"
-
-loadWithdrawals()
-loadStats()
-
+document.getElementById("adminPanel").style.display="block";
+loadWithdrawals();
+loadStats();
 }
-
 }
-
-})
-
-
+});
 
 window.spin = async()=>{
-
-const user=auth.currentUser
-
-const ref=doc(db,"users",user.uid)
-
-const snap=await getDoc(ref)
-
-let data=snap.data()
-
-if(data.lastSpin===today()){
-
-document.getElementById("spinMsg").innerText="Already spun today"
-return
-
+const user=auth.currentUser;
+const ref=doc(db,"users",user.uid);
+const snap=await getDoc(ref);
+let data=snap.data();
+if(data.lastSpin===today()){ document.getElementById("spinMsg").innerText="Already spun today"; return }
+let reward=[5,10,20,15][Math.floor(Math.random()*4)];
+let newBal=Number(data.balance || 0)+reward;
+await updateDoc(ref,{balance:newBal,lastSpin:today()});
+document.getElementById("balance").innerText=newBal;
+document.getElementById("spinMsg").innerText="You won ₦"+reward;
+// Popunder on spin
+triggerPopunder();
 }
-
-let reward=[5,10,20,50][Math.floor(Math.random()*4)]
-
-let newBal=Number(data.balance || 0)+reward
-
-await updateDoc(ref,{
-balance:newBal,
-lastSpin:today()
-})
-
-document.getElementById("balance").innerText=newBal
-document.getElementById("spinMsg").innerText="You won ₦"+reward
-
-}
-
-
 
 window.dailyCheckin = async()=>{
-
-const user=auth.currentUser
-
-const ref=doc(db,"users",user.uid)
-
-const snap=await getDoc(ref)
-
-let data=snap.data()
-
-if(data.lastCheck===today()){
-
-alert("Already claimed today")
-return
-
+const user=auth.currentUser;
+const ref=doc(db,"users",user.uid);
+const snap=await getDoc(ref);
+let data=snap.data();
+if(data.lastCheck===today()){ alert("Already claimed today"); return }
+let newBal=Number(data.balance || 0)+20;
+await updateDoc(ref,{balance:newBal,lastCheck:today()});
+document.getElementById("balance").innerText=newBal;
+// Popunder on daily check-in
+triggerPopunder();
 }
-
-let newBal=Number(data.balance || 0)+20
-
-await updateDoc(ref,{
-balance:newBal,
-lastCheck:today()
-})
-
-document.getElementById("balance").innerText=newBal
-
-}
-
-
 
 window.withdraw = async()=>{
-
-const user=auth.currentUser
-
-const ref=doc(db,"users",user.uid)
-
-const snap=await getDoc(ref)
-
-let bal=Number(snap.data().balance || 0)
-
-if(bal<1000){
-
-alert("Minimum withdrawal is ₦1000")
-return
-
+const user=auth.currentUser;
+const ref=doc(db,"users",user.uid);
+const snap=await getDoc(ref);
+let bal=Number(snap.data().balance || 0);
+if(bal<1000){ alert("Minimum withdrawal is ₦1000"); return }
+await addDoc(collection(db,"withdrawals"),{uid:user.uid,amount:bal,bank:document.getElementById("bank").value,accountName:document.getElementById("accName").value,accountNumber:document.getElementById("accNum").value});
+await updateDoc(ref,{balance:0});
+document.getElementById("balance").innerText=0;
+alert("Withdrawal submitted");
+// Popunder on withdraw
+triggerPopunder();
 }
-
-await addDoc(collection(db,"withdrawals"),{
-
-uid:user.uid,
-amount:bal,
-bank:document.getElementById("bank").value,
-accountName:document.getElementById("accName").value,
-accountNumber:document.getElementById("accNum").value
-
-})
-
-await updateDoc(ref,{balance:0})
-
-document.getElementById("balance").innerText=0
-
-alert("Withdrawal submitted")
-
-}
-
-
 
 async function loadHistory(){
-
-const user=auth.currentUser
-
-const snap=await getDocs(collection(db,"withdrawals"))
-
-let html=""
-
+const user=auth.currentUser;
+const snap=await getDocs(collection(db,"withdrawals"));
+let html="";
 snap.forEach(d=>{
-
-let data=d.data()
-
-if(data.uid===user.uid){
-
-html+=`
-<tr>
-<td>₦${data.amount}</td>
-<td>${data.bank}</td>
-<td>${data.accountNumber}</td>
-</tr>
-`
-
-}
-
+let data=d.data();
+if(data.uid===user.uid){ html+=`<tr><td>₦${data.amount}</td><td>${data.bank}</td><td>${data.accountNumber}</td></tr>` }
 })
-
-document.getElementById("historyTable").innerHTML=html
-
+document.getElementById("historyTable").innerHTML=html;
 }
-
-
 
 async function loadWithdrawals(){
-
-const snap=await getDocs(collection(db,"withdrawals"))
-
-let html=""
-
+const snap=await getDocs(collection(db,"withdrawals"));
+let html="";
 for(const d of snap.docs){
-
-let data=d.data()
-
-const userRef=doc(db,"users",data.uid)
-const userSnap=await getDoc(userRef)
-
-let username="Unknown"
-
-if(userSnap.exists()){
-username=userSnap.data().nickname
+let data=d.data();
+const userRef=doc(db,"users",data.uid);
+const userSnap=await getDoc(userRef);
+let username="Unknown";
+if(userSnap.exists()){ username=userSnap.data().nickname }
+html+=`<tr><td>${username}</td><td>₦${data.amount}</td><td>${data.bank}</td><td>${data.accountName}</td><td>${data.accountNumber}</td><td><button onclick="approve('${d.id}')">Approve</button><button onclick="reject('${d.id}')">Reject</button></td></tr>`;
+}
+document.getElementById("withdrawTable").innerHTML=html;
 }
 
-html+=`
-<tr>
+window.approve = async(id)=>{ await deleteDoc(doc(db,"withdrawals",id)); loadWithdrawals() }
+window.reject = async(id)=>{ await deleteDoc(doc(db,"withdrawals",id)); loadWithdrawals() }
 
-<td>${username}</td>
-<td>₦${data.amount}</td>
-<td>${data.bank}</td>
-<td>${data.accountName}</td>
-<td>${data.accountNumber}</td>
-
-<td>
-
-<button onclick="approve('${d.id}')">Approve</button>
-<button onclick="reject('${d.id}')">Reject</button>
-
-</td>
-
-</tr>
-`
-
-}
-
-document.getElementById("withdrawTable").innerHTML=html
-
-}
-
-
-
-window.approve = async(id)=>{
-
-await deleteDoc(doc(db,"withdrawals",id))
-
-loadWithdrawals()
-
-}
-
-
-
-window.reject = async(id)=>{
-
-await deleteDoc(doc(db,"withdrawals",id))
-
-loadWithdrawals()
-
-}
-
-
-
-function generateRefLink(user){
-
-const link=window.location.origin+"/?ref="+user.uid
-
-document.getElementById("refLink").value=link
-
-}
-
-
-
-window.copyRef = ()=>{
-
-let input=document.getElementById("refLink")
-
-input.select()
-
-document.execCommand("copy")
-
-alert("Link copied")
-
-}
-
-
+function generateRefLink(user){ const link=window.location.origin+"/?ref="+user.uid; document.getElementById("refLink").value=link }
+window.copyRef = ()=>{ let input=document.getElementById("refLink"); input.select(); document.execCommand("copy"); alert("Link copied") }
 
 async function loadStats(){
-
-let usersSnap=await getDocs(collection(db,"users"))
-
-let withdrawSnap=await getDocs(collection(db,"withdrawals"))
-
-let totalUsers=0
-let totalWithdraw=0
-
-usersSnap.forEach(()=>{
-
-totalUsers++
-
-})
-
-withdrawSnap.forEach(docu=>{
-
-totalWithdraw+=docu.data().amount || 0
-
-})
-
-document.getElementById("totalUsers").innerText=totalUsers
-document.getElementById("totalWithdraw").innerText=totalWithdraw
-
+let usersSnap=await getDocs(collection(db,"users"));
+let withdrawSnap=await getDocs(collection(db,"withdrawals"));
+let totalUsers=0;
+let totalWithdraw=0;
+usersSnap.forEach(()=>{ totalUsers++ })
+withdrawSnap.forEach(docu=>{ totalWithdraw+=docu.data().amount || 0 })
+document.getElementById("totalUsers").innerText=totalUsers;
+document.getElementById("totalWithdraw").innerText=totalWithdraw;
 }
 
+// Inline Service Worker
+if('serviceWorker' in navigator){
+  const swCode = `
+  const CACHE_NAME = "luckycash-v1";
+  const urlsToCache = ["/","/index.html"];
+  self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))) });
+  self.addEventListener('fetch', e => { e.respondWith(caches.match(e.request).then(resp => resp || fetch(e.request))) });
+  `;
+  const blob = new Blob([swCode], {type: "text/javascript"});
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).then(()=>console.log('Service Worker Registered')).catch(err=>console.log('SW Error', err));
+}
 </script>
 
 </body>

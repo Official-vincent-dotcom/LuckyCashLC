@@ -4,91 +4,52 @@
 <meta charset="UTF-8">
 <title>LuckyCash NG</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#22c55e">
-<link rel="manifest" href="manifest.json">
-
 <style>
-body{
-  background:#0f172a;
-  color:white;
-  font-family:Arial;
-  text-align:center;
-  margin:0;
-}
-
-.card{
-  background:#1e293b;
-  margin:15px;
-  padding:20px;
-  border-radius:10px;
-}
-
-input{
-  padding:10px;
-  margin:5px;
-  width:80%;
-  border:none;
-  border-radius:6px;
-}
-
-button{
-  padding:10px 20px;
-  background:#22c55e;
-  border:none;
-  border-radius:6px;
-  color:white;
-  margin:5px;
-}
-
-table{
-  width:100%;
-  margin-top:10px;
-}
-
-td,th{
-  padding:8px;
-}
-
-#dashboard,#adminPanel,#authBox{
-  display:none;
-}
-
-/* Splash screen */
-#splash{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:#020617;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-  font-size:24px;
-  color:white;
-}
-
-#browserCheck{
-  margin-top:10px;
-  font-size:16px;
-  color:#ccc;
-  font-style:italic;
-}
+body{margin:0;font-family:Arial;background:#0f172a;color:white;text-align:center;}
+.card{background:#1e293b;margin:15px;padding:20px;border-radius:10px;}
+input{padding:10px;margin:5px;width:80%;border:none;border-radius:6px;}
+button{padding:10px 20px;background:#22c55e;border:none;border-radius:6px;color:white;margin:5px;cursor:pointer;}
+table{width:100%;margin-top:10px;}
+td,th{padding:8px;}
+#dashboard,#adminPanel,#authBox{display:none;}
+#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:#0f172a;color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:1.2em;z-index:9999;}
+#splash h1{font-size:2em;margin:0;}
+#installBtn{margin-top:10px;background:#f59e0b;color:#0f172a;font-weight:bold;}
 </style>
-</head>
 
+<!-- Inline Manifest for PWA -->
+<script>
+const manifest = {
+  "name": "LuckyCash NG",
+  "short_name": "LuckyCash",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#22c55e",
+  "description": "Earn rewards daily by spinning, checking in, and referring friends!",
+  "icons": [
+    {"src":"icon-192.png","sizes":"192x192","type":"image/png"},
+    {"src":"icon-512.png","sizes":"512x512","type":"image/png"}
+  ]
+};
+const stringManifest = JSON.stringify(manifest);
+const blob = new Blob([stringManifest], {type: 'application/json'});
+const manifestURL = URL.createObjectURL(blob);
+const link = document.createElement('link');
+link.rel = 'manifest';
+link.href = manifestURL;
+document.head.appendChild(link);
+</script>
+</head>
 <body>
 
 <!-- Splash -->
 <div id="splash">
   <h1>LuckyCash NG</h1>
-  <p>Loading your rewards...</p>
-  <p id="browserCheck">Checking your browser...</p>
+  <p>Checking your browser...</p>
 </div>
 
-<!-- Login/Register -->
+<!-- Authentication -->
 <div id="authBox" class="card">
   <input id="nickname" placeholder="Nickname"><br>
   <input id="email" placeholder="Email"><br>
@@ -99,27 +60,21 @@ td,th{
 
 <!-- Dashboard -->
 <div id="dashboard">
-  <div class="card">
-    Balance: ₦<span id="balance">0</span>
-  </div>
-
+  <div class="card">Balance: ₦<span id="balance">0</span></div>
   <div class="card">
     <h3>Spin</h3>
     <button onclick="spin()">Spin</button>
     <p id="spinMsg"></p>
   </div>
-
   <div class="card">
     <h3>Daily Check-in</h3>
     <button onclick="dailyCheckin()">Claim ₦20</button>
   </div>
-
   <div class="card">
     <h3>Referral</h3>
     <input id="refLink" readonly>
     <button onclick="copyRef()">Copy Link</button>
   </div>
-
   <div class="card">
     <h3>Withdraw</h3>
     <input id="bank" placeholder="Bank Name"><br>
@@ -127,16 +82,15 @@ td,th{
     <input id="accNum" placeholder="Account Number"><br>
     <button onclick="withdraw()">Withdraw</button>
   </div>
-
+  <div class="card">
+    <h3>Install LuckyCash NG</h3>
+    <button id="installBtn">Install App</button>
+  </div>
   <div class="card">
     <h3>Withdrawal History</h3>
     <table>
       <thead>
-        <tr>
-          <th>Amount</th>
-          <th>Bank</th>
-          <th>Account</th>
-        </tr>
+        <tr><th>Amount</th><th>Bank</th><th>Account</th></tr>
       </thead>
       <tbody id="historyTable"></tbody>
     </table>
@@ -152,27 +106,19 @@ td,th{
   </div>
   <table>
     <thead>
-      <tr>
-        <th>User</th>
-        <th>Amount</th>
-        <th>Bank</th>
-        <th>Account Name</th>
-        <th>Account Number</th>
-        <th>Action</th>
-      </tr>
+      <tr><th>User</th><th>Amount</th><th>Bank</th><th>Account Name</th><th>Account Number</th><th>Action</th></tr>
     </thead>
     <tbody id="withdrawTable"></tbody>
   </table>
 </div>
 
+<!-- Adsterra Popunder -->
+<script src="https://pl28903840.effectivegatecpm.com/01/8b/a8/018ba8e7fe1d261d649e40592118701f.js"></script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import {
-  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import {
-  getFirestore, doc, setDoc, getDoc, updateDoc, addDoc, collection, getDocs, deleteDoc
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, addDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey:"AIzaSyCaXJBwb6DxHnEmOfZRy_AcwP6oxgilD8U",
@@ -182,84 +128,102 @@ const firebaseConfig = {
   messagingSenderId:"991155185446",
   appId:"1:991155185446:web:45f37f167af7a8184e83e7"
 };
-
 const ADMIN="adefemioke558@gmail.com";
-
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getFirestore(app);
 
 function today(){ return new Date().toISOString().split("T")[0]; }
 
-// Register/Login functions
+// Splash timeout
+setTimeout(() => {
+  document.getElementById("splash").style.display="none";
+  document.getElementById("authBox").style.display="block";
+},3000);
+
+// PWA install
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt=e;
+  document.getElementById('installBtn').style.display='inline-block';
+});
+
+document.getElementById('installBtn').addEventListener('click', async()=>{
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    const {outcome}=await deferredPrompt.userChoice;
+    console.log('Install outcome:', outcome);
+    deferredPrompt=null;
+  }
+});
+
+// Register
 window.registerUser = async()=>{
   const nickname=document.getElementById("nickname").value;
   const email=document.getElementById("email").value;
   const password=document.getElementById("password").value;
   const cred=await createUserWithEmailAndPassword(auth,email,password);
-  await setDoc(doc(db,"users",cred.user.uid),{nickname:nickname,balance:0,lastSpin:"",lastCheck:""});
+  await setDoc(doc(db,"users",cred.user.uid),{nickname,balance:0,lastSpin:"",lastCheck:""});
   alert("Registered successfully");
-}
+};
 
+// Login
 window.loginUser = async()=>{
   const email=document.getElementById("email").value;
   const password=document.getElementById("password").value;
   await signInWithEmailAndPassword(auth,email,password);
-}
+};
 
+// Auth state
 onAuthStateChanged(auth, async(user)=>{
   if(user){
-    document.getElementById("authBox").style.display="none"; // Hide login
-    document.getElementById("dashboard").style.display="block"; // Show dashboard
-    if(user.email === ADMIN){
-      document.getElementById("adminPanel").style.display="block";
-    }
-
+    document.getElementById("authBox").style.display="none";
+    document.getElementById("dashboard").style.display="block";
+    if(user.email===ADMIN){ document.getElementById("adminPanel").style.display="block"; }
     const ref=doc(db,"users",user.uid);
     const snap=await getDoc(ref);
-    let balance=Number(snap.data().balance||0);
-    document.getElementById("balance").innerText=balance;
+    document.getElementById("balance").innerText=Number(snap.data()?.balance||0);
     generateRefLink(user);
     loadHistory();
+    loadStats();
   }
 });
 
-// Spin, dailyCheckin, withdraw, copyRef, load functions (same as previous code)
-window.spin = async()=>{
+// Spin
+window.spin=async()=>{
   const user=auth.currentUser;
   const ref=doc(db,"users",user.uid);
   const snap=await getDoc(ref);
   let data=snap.data();
-  if(data.lastSpin===today()){
-    document.getElementById("spinMsg").innerText="Already spun today";
-    return;
-  }
+  if(data.lastSpin===today()){ document.getElementById("spinMsg").innerText="Already spun today"; return; }
   let reward=[5,10,20,50][Math.floor(Math.random()*4)];
   let newBal=Number(data.balance||0)+reward;
   await updateDoc(ref,{balance:newBal,lastSpin:today()});
   document.getElementById("balance").innerText=newBal;
   document.getElementById("spinMsg").innerText="You won ₦"+reward;
-}
+};
 
-window.dailyCheckin = async()=>{
+// Daily check-in
+window.dailyCheckin=async()=>{
   const user=auth.currentUser;
   const ref=doc(db,"users",user.uid);
   const snap=await getDoc(ref);
-  let data=snap.data();
-  if(data.lastCheck===today()){ alert("Already claimed today"); return; }
-  let newBal=Number(data.balance||0)+20;
+  if(snap.data()?.lastCheck===today()){ alert("Already claimed today"); return; }
+  let newBal=Number(snap.data()?.balance||0)+20;
   await updateDoc(ref,{balance:newBal,lastCheck:today()});
   document.getElementById("balance").innerText=newBal;
-}
+};
 
-window.withdraw = async()=>{
+// Withdraw
+window.withdraw=async()=>{
   const user=auth.currentUser;
   const ref=doc(db,"users",user.uid);
   const snap=await getDoc(ref);
-  let bal=Number(snap.data().balance||0);
+  let bal=Number(snap.data()?.balance||0);
   if(bal<1000){ alert("Minimum withdrawal is ₦1000"); return; }
   await addDoc(collection(db,"withdrawals"),{
-    uid:user.uid, amount:bal,
+    uid:user.uid,amount:bal,
     bank:document.getElementById("bank").value,
     accountName:document.getElementById("accName").value,
     accountNumber:document.getElementById("accNum").value
@@ -267,8 +231,9 @@ window.withdraw = async()=>{
   await updateDoc(ref,{balance:0});
   document.getElementById("balance").innerText=0;
   alert("Withdrawal submitted");
-}
+};
 
+// History
 async function loadHistory(){
   const user=auth.currentUser;
   const snap=await getDocs(collection(db,"withdrawals"));
@@ -282,56 +247,50 @@ async function loadHistory(){
   document.getElementById("historyTable").innerHTML=html;
 }
 
+// Admin
 async function loadWithdrawals(){
   const snap=await getDocs(collection(db,"withdrawals"));
   let html="";
   for(const d of snap.docs){
-    let data=d.data();
+    const data=d.data();
     const userRef=doc(db,"users",data.uid);
     const userSnap=await getDoc(userRef);
-    let username="Unknown";
-    if(userSnap.exists()){ username=userSnap.data().nickname; }
-    html+=`<tr><td>${username}</td><td>₦${data.amount}</td><td>${data.bank}</td><td>${data.accountName}</td><td>${data.accountNumber}</td><td><button onclick="approve('${d.id}')">Approve</button><button onclick="reject('${d.id}')">Reject</button></td></tr>`;
+    let username=userSnap.exists()?userSnap.data().nickname:"Unknown";
+    html+=`<tr>
+      <td>${username}</td>
+      <td>₦${data.amount}</td>
+      <td>${data.bank}</td>
+      <td>${data.accountName}</td>
+      <td>${data.accountNumber}</td>
+      <td><button onclick="approve('${d.id}')">Approve</button><button onclick="reject('${d.id}')">Reject</button></td>
+    </tr>`;
   }
   document.getElementById("withdrawTable").innerHTML=html;
 }
+window.approve=async(id)=>{ await deleteDoc(doc(db,"withdrawals",id)); loadWithdrawals(); };
+window.reject=async(id)=>{ await deleteDoc(doc(db,"withdrawals",id)); loadWithdrawals(); };
 
-window.approve = async(id)=>{ await deleteDoc(doc(db,"withdrawals",id)); loadWithdrawals(); }
-window.reject = async(id)=>{ await deleteDoc(doc(db,"withdrawals",id)); loadWithdrawals(); }
-
+// Referral
 function generateRefLink(user){
-  const link=window.location.origin+"/?ref="+user.uid;
-  document.getElementById("refLink").value=link;
+  document.getElementById("refLink").value=window.location.origin+"/?ref="+user.uid;
 }
+window.copyRef=()=>{ let input=document.getElementById("refLink"); input.select(); document.execCommand("copy"); alert("Link copied"); };
 
-window.copyRef = ()=>{ let input=document.getElementById("refLink"); input.select(); document.execCommand("copy"); alert("Link copied"); }
-
+// Stats
 async function loadStats(){
-  let usersSnap=await getDocs(collection(db,"users"));
-  let withdrawSnap=await getDocs(collection(db,"withdrawals"));
-  let totalUsers=0, totalWithdraw=0;
-  usersSnap.forEach(()=>{ totalUsers++; });
-  withdrawSnap.forEach(docu=>{ totalWithdraw+=docu.data().amount||0; });
-  document.getElementById("totalUsers").innerText=totalUsers;
+  const usersSnap=await getDocs(collection(db,"users"));
+  const withdrawSnap=await getDocs(collection(db,"withdrawals"));
+  document.getElementById("totalUsers").innerText=usersSnap.size;
+  let totalWithdraw=0; withdrawSnap.forEach(doc=>{ totalWithdraw+=doc.data()?.amount||0; });
   document.getElementById("totalWithdraw").innerText=totalWithdraw;
 }
 
-// Splash screen logic (3 seconds)
-setTimeout(()=>{
-  document.getElementById("splash").style.display="none";
-  document.getElementById("authBox").style.display="block"; // Show login/register ONLY
-},3000);
-</script>
-
-<!-- Adsterra Popunder (safe, triggers on user interaction) -->
-<script src="https://pl28903840.effectivegatecpm.com/01/8b/a8/018ba8e7fe1d261d649e40592118701f.js"></script>
-
-<!-- Service Worker Registration for PWA -->
-<script>
+// Inline Service Worker
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/sw.js')
-  .then(()=>console.log('Service Worker Registered'))
-  .catch(err=>console.log('SW registration failed:',err));
+  navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
+    self.addEventListener('install', e=>{console.log('SW installed');});
+    self.addEventListener('fetch', e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});
+  `],{type:'text/javascript'}))).then(()=>console.log('SW registered')).catch(err=>console.log(err));
 }
 </script>
 
